@@ -1,4 +1,11 @@
-mulai dari
-
+Untuk alur feature Like mulai dari file :
 1. movies.jsx
 2. like.jsx
+
+Untuk alur feature Pagination mulai dari file :
+1. movies.jsx (cari yg berkaitan dengan component Pagination)
+2. common/pagination.jsx
+
+Untuk alur function paginate mulai dari file :
+1. movies.jsx (cari yg berkaitan dengan function paginate)
+2. utils/paginate.jsx

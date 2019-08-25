@@ -1,11 +1,15 @@
 //Stateful component
 import React, { Component } from 'react'
 import { getMovies } from '../services/fakeMovieService'  //import function getMovies yg berada di fakeMovieService
-import Like from './like'
+import Like from './common/like'
+import Pagination from './common/pagination'
+import paginate from '../utils/paginate' //import function paginate 
 
 class Movies extends Component {
     state = {
-        movies: getMovies() //menjadikan getMovies() kedalam state bernama movies
+        movies: getMovies(), //menjadikan getMovies() kedalam state bernama movies
+        limitPage : 3,
+        currentPage : 0
     }
 
     handleDelete = movie => {
@@ -21,8 +25,16 @@ class Movies extends Component {
         this.setState({movies}) //mengubah data state movies dengan data terbaru
     }
 
+    handlePageChange = page => {
+        this.setState({ currentPage: page }) //mengubah value page terakhir sesuai dengan page. liat di component Pagination
+    }
+
     render() {
         const { length : count } = this.state.movies //menghitung length state.movies dengan nama variabel count
+        const { limitPage, currentPage, movies: allMovies } = this.state //mengambil state limitPage dan currentPage = dari state
+        //mengubah variabel movies menjadi allMovies
+
+        const movies = paginate(allMovies, currentPage, limitPage) //membuat data movies hasil return function paginate di file './utils/paginate.js
 
         if (count === 0)
             return <p className="p3">There are no movies in database</p>
@@ -41,8 +53,8 @@ class Movies extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.movies.map(movie => ( //untuk me-looping tag html gunakan buka kurung(), jika menggunakan kurung kurawa{} tidak akan berfungsi/error
-                            <tr key={movie._id} /* untuk looping data yg sama harus diberi key sebagai pembeda antara data pertama loop dan seterusnya */>
+                        {movies.map(movie => ( //untuk me-looping tag html gunakan buka kurung(), jika menggunakan kurung kurawa{} tidak akan berfungsi/error
+                            <tr key={movie._id} /* untuk looping data meggunakan map harus diberi key sebagai pembeda antara data pertama loop dan seterusnya */>
                                 <td>{movie.title}</td>
                                 <td>{movie.genre.name}</td>
                                 <td>{movie.numberInStock}</td>
@@ -53,6 +65,7 @@ class Movies extends Component {
                         ))}
                     </tbody>
                 </table>
+                <Pagination totalItems={count} limitPage={limitPage} onPageChange={this.handlePageChange} currentPage={currentPage} />
             </React.Fragment>
         );
     }
